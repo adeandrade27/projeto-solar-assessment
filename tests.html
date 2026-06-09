@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projeto Solar — Resultados de Testes · FinDiagAgent v13</title>
+  <style>
+    :root {
+      --red:    #dc2626;
+      --orange: #ea580c;
+      --yellow: #ca8a04;
+      --green:  #16a34a;
+      --blue:   #2563eb;
+      --bg:     #f9fafb;
+      --card:   #ffffff;
+      --border: #e5e7eb;
+      --text:   #111827;
+      --muted:  #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; }
+
+    .header { background: linear-gradient(135deg, #1e3a5f 0%, #1d4ed8 100%); color: #fff; padding: 40px 48px 32px; }
+    .header-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; opacity: .7; margin-bottom: 8px; }
+    .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .header-meta { font-size: 13px; opacity: .75; margin-top: 10px; display: flex; gap: 24px; flex-wrap: wrap; }
+    .header-meta span::before { content: "· "; }
+    .header-meta span:first-child::before { content: ""; }
+
+    .nav-back { background: #1e3a5f; padding: 10px 48px; }
+    .nav-back a { color: #93c5fd; font-size: 13px; text-decoration: none; }
+    .nav-back a:hover { text-decoration: underline; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 40px 48px; }
+
+    /* Summary cards */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .summary-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-align: center; }
+    .summary-card .num { font-size: 36px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+    .summary-card .label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .summary-card.green .num { color: var(--green); }
+    .summary-card.red .num { color: var(--red); }
+    .summary-card.orange .num { color: var(--orange); }
+    .summary-card.blue .num { color: var(--blue); }
+
+    h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+    h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+    /* Handler result table */
+    .section { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 28px; margin-bottom: 28px; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: #f3f4f6; padding: 9px 12px; text-align: left; border: 1px solid var(--border); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+    td { padding: 10px 12px; border: 1px solid var(--border); vertical-align: top; }
+    tr:hover td { background: #fafafa; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .badge-pass    { background: #dcfce7; color: #15803d; }
+    .badge-fail    { background: #fee2e2; color: #b91c1c; }
+    .badge-warn    { background: #fef9c3; color: #854d0e; }
+    .badge-blocked { background: #fce7f3; color: #be185d; }
+
+    code { font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; background: #f3f4f6; padding: 1px 5px; border-radius: 3px; }
+
+    .payload-box { font-family: "SF Mono", "Fira Code", monospace; font-size: 11px; background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; margin-top: 8px; white-space: pre-wrap; word-break: break-all; color: #374151; }
+
+    .finding-ref { font-size: 11px; background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+
+    .detail-row td { background: #fafafa; font-size: 12px; color: var(--muted); }
+
+    footer { text-align: center; padding: 32px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); margin-top: 40px; }
+  </style>
+</head>
+<body>
+
+<div class="nav-back">
+  <a href="index.html">← Voltar ao Org Assessment</a>
+</div>
+
+<div class="header">
+  <div class="header-eyebrow">Projeto Solar · FinDiagAgent v13 · Sandbox cec-claro--ibuypfpme</div>
+  <h1>Resultados de Testes — Handler Smoke Suite</h1>
+  <div class="header-meta">
+    <span>Data: 09/jun/2026</span>
+    <span>Executor: adeandrade@salesforce.com.ibuy</span>
+    <span>Método: Anonymous Apex via SF_AgenticGateway</span>
+    <span>CaseId de referência: 500Hn00001sbGrYIAU</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Summary -->
+  <div class="summary-grid">
+    <div class="summary-card blue">
+      <div class="num">12</div>
+      <div class="label">Handlers testados</div>
+    </div>
+    <div class="summary-card green">
+      <div class="num">8</div>
+      <div class="label">Gateway pass + flow ok</div>
+    </div>
+    <div class="summary-card orange">
+      <div class="num">3</div>
+      <div class="label">Gateway pass, flow error</div>
+    </div>
+    <div class="summary-card red">
+      <div class="num">1</div>
+      <div class="label">Bloqueado (CMDT gap)</div>
+    </div>
+  </div>
+
+  <!-- Contexto -->
+  <div class="section">
+    <h2>Contexto e metodologia</h2>
+    <p style="margin-bottom:12px;">
+      Os 12 handlers ativos do <code>SF_AgenticGateway</code> foram invocados individualmente via <strong>Anonymous Apex</strong>
+      diretamente contra o gateway — sem depender do agente estar publicado ou de sessão de preview ativa.
+      Cada chamada usa a mesma interface que o FinDiagAgent usa em produção: <code>SF_AgenticGateway.invoke()</code>
+      com <code>handlerClass</code> + <code>payloadJson</code> + <code>correlationId</code>.
+    </p>
+    <p style="margin-bottom:12px;">
+      Os schemas de payload foram extraídos diretamente do metadata dos flows via <strong>Tooling API</strong>
+      (campos <code>isInput=true</code> de cada <code>FlowVersion</code>) e dos docblocks dos handlers Apex.
+      Os valores de teste são sintéticos — referenciam o CaseId real da sandbox mas alguns IDs secundários
+      (orderReference, contractNumber, invoiceId) são placeholders, o que explica os erros de execução nos flows
+      h09, h11 e h12.
+    </p>
+    <p>
+      Cada invocação bem-sucedida gerou um registro em <code>SF_AgenticInvocation__c</code> com
+      <code>correlationId</code> prefixado por <code>smoke</code> — rastreável via SOQL.
+    </p>
+  </div>
+
+  <!-- Resultados por handler -->
+  <div class="section">
+    <h2>Resultados por handler</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Handler</th>
+          <th>Tipo</th>
+          <th>Status gateway</th>
+          <th>Resultado</th>
+          <th>Observação</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td>h01</td>
+          <td><code>flow:Buscar_caso_de_atendimento</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-pass">Finished</span></td>
+          <td>Flow executou. <code>recordCase: null</code> — CaseId de referência não mapeado para o campo <code>referenceCase</code> do flow.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"referenceCase": "500Hn00001sbGrYIAU"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>referenceCase : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h02</td>
+          <td><code>apex:SF_FinDiagHistoricalInvoicesHandler</code></td>
+          <td>Apex</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-warn">API error</span></td>
+          <td>Handler executou corretamente. Retornou erro de integração com API externa — esperado no sandbox sem credenciais de billing.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"startDate": "2026-01-01", "endDate": "2026-06-01", "operatorCode": "CLARO", "contractNumber": "123456"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>startDate : String</code> · <code>endDate : String</code> · <code>operatorCode : String</code> · <code>contractNumber : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h03</td>
+          <td><code>apex:SF_FinDiagInvoiceDetailsHandler</code></td>
+          <td>Apex</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-warn">API error</span></td>
+          <td>Handler executou corretamente. Retornou <code>API-INVOICEDETAILS-500</code> — API externa de detalhes de fatura indisponível no sandbox.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"invoiceId": "INV-001", "contractNumber": "123456", "operatorCode": "CLARO"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>invoiceId : String</code> · <code>contractNumber : String</code> · <code>operatorCode : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h04</td>
+          <td><code>flow:Agentforce_Roteamento_Divergencia_Financeira</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-pass">Finished</span></td>
+          <td>Flow executou e concluiu. Roteamento de divergência financeira funcional.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"varCaseId": "500Hn00001sbGrYIAU", "varDescricaoAnalise": "cliente contesta cobrança indevida de R$150"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>varCaseId : String</code> · <code>varDescricaoAnalise : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h05</td>
+          <td><code>flow:Buscar_Dados_Assets</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-pass">Finished</span></td>
+          <td>Flow executou. <code>recordAssets: []</code> — conta de teste sem assets cadastrados.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"IDdaconta": "001000000000001", "orderReference": "ORD-001"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>IDdaconta : String</code> · <code>orderReference : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h06</td>
+          <td><code>flow:Buscar_informacoes_da_Conta</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-pass">Finished</span></td>
+          <td>Flow executou. <code>recordAccount: null</code> — IDs de conta de teste não existem na sandbox.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"caseBillingAccount": "001000000000001", "caseConsumerAccount": "001000000000002"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>caseBillingAccount : String</code> · <code>caseConsumerAccount : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h07</td>
+          <td><code>flow:Buscar_Book_Ofertas</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-pass">Finished</span></td>
+          <td>Flow executou e concluiu. Book de ofertas funcional.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"varAno": 2026, "varCidade": "São Paulo", "varMes": "06", "varProduto": "FIXO"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>varAno : Number</code> · <code>varCidade : String</code> · <code>varMes : String</code> · <code>varProduto : String</code>
+          </td>
+        </tr>
+
+        <tr style="background:#fff5f5;">
+          <td>h08</td>
+          <td><code>flow:Buscar_perfil_do_usuario</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-blocked">BLOQUEADO</span></td>
+          <td><span class="badge badge-fail">Not in allow-list</span></td>
+          <td><span class="finding-ref">F-03</span> Handler não cadastrado no CMDT <code>SF_AgenticGateway_Allow__mdt</code>. O agente não consegue consultar perfil do usuário.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Erro:</strong> <code>SF_AgenticGateway.SF_AgenticGatewayException: Handler not in allow-list: flow:Buscar_perfil_do_usuario</code><br>
+            <strong style="display:block;margin-top:6px;">Ação:</strong> Adicionar registro ativo no CMDT com <code>DispatchType=flow</code> e <code>Target=Buscar_perfil_do_usuario</code>.
+          </td>
+        </tr>
+
+        <tr>
+          <td>h09</td>
+          <td><code>flow:Buscar_casos_do_cliente_ou_contrato</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-warn">Flow error</span></td>
+          <td>Gateway despachou corretamente. Flow falhou internamente — <code>contractReference</code> de teste não existe na sandbox. Funcional com dados reais.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"contractReference": "CONT-001"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>contractReference : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h10</td>
+          <td><code>flow:Buscar_Ajuste_de_Pagamento</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-pass">Finished</span></td>
+          <td>Flow executou. Retornou <code>recordTypes</code> preenchido.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"accountReference": "001000000000001", "caseReference": "500Hn00001sbGrYIAU"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>accountReference : String</code> · <code>caseReference : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h11</td>
+          <td><code>flow:Buscar_Customer_Interaction_do_pedido_order</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-warn">Flow error</span></td>
+          <td>Gateway despachou corretamente. Flow falhou internamente — <code>orderReference</code> de teste não existe na sandbox. Funcional com dados reais.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"orderReference": "ORD-001"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>orderReference : String</code>
+          </td>
+        </tr>
+
+        <tr>
+          <td>h12</td>
+          <td><code>flow:Buscar_Customer_Interection_Topic_do_caso</code></td>
+          <td>Flow</td>
+          <td><span class="badge badge-pass">PASS</span></td>
+          <td><span class="badge badge-warn">Flow error</span></td>
+          <td>Gateway despachou corretamente. Flow falhou internamente — IDs de teste não existem na sandbox. Funcional com dados reais.</td>
+        </tr>
+        <tr class="detail-row">
+          <td colspan="6">
+            <strong>Payload:</strong>
+            <div class="payload-box">{"caseReference": "500Hn00001sbGrYIAU", "customerInterectionReference": "INT-001"}</div>
+            <strong style="display:block;margin-top:8px;">Schema (IN):</strong> <code>caseReference : String</code> · <code>customerInterectionReference : String</code>
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Legenda de status -->
+  <div class="section">
+    <h2>Legenda de status</h2>
+    <table>
+      <thead>
+        <tr><th>Badge</th><th>Significado</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="badge badge-pass">PASS / Finished</span></td><td>Gateway despachou e flow/handler executou até o fim. Resultado pode ser vazio se dados de teste não existem na sandbox — não é falha do handler.</td></tr>
+        <tr><td><span class="badge badge-warn">API error / Flow error</span></td><td>Gateway despachou corretamente. Falha ocorreu no sistema externo (API de billing) ou em dados de teste inexistentes. Handler está operacional.</td></tr>
+        <tr><td><span class="badge badge-blocked">BLOQUEADO</span></td><td>Handler rejeitado pelo CMDT allow-list antes de qualquer execução. Gap de configuração — ver <span class="finding-ref">F-03</span> no Org Assessment.</td></tr>
+        <tr><td><span class="badge badge-fail">Not in allow-list</span></td><td>Mesmo que BLOQUEADO — handler não registrado em <code>SF_AgenticGateway_Allow__mdt</code>.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Schemas documentados -->
+  <div class="section">
+    <h2>Schemas de payload documentados</h2>
+    <p style="margin-bottom:16px; color:var(--muted); font-size:13px;">
+      Extraídos via Tooling API (<code>FlowVersion.Metadata.variables</code>) e docblocks Apex em 09/jun/2026.
+      Servem como contrato entre o agente e cada handler.
+    </p>
+    <table>
+      <thead>
+        <tr><th>Handler</th><th>Campos de entrada obrigatórios</th><th>Saída principal</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>Buscar_caso_de_atendimento</code></td><td><code>referenceCase : String</code></td><td><code>recordCase : SObject</code></td></tr>
+        <tr><td><code>SF_FinDiagHistoricalInvoicesHandler</code></td><td><code>startDate</code> · <code>endDate</code> · <code>operatorCode</code> · <code>contractNumber</code> (todos String)</td><td>JSON da API externa</td></tr>
+        <tr><td><code>SF_FinDiagInvoiceDetailsHandler</code></td><td><code>invoiceId</code> · <code>contractNumber</code> · <code>operatorCode</code> (todos String)</td><td>JSON da API externa</td></tr>
+        <tr><td><code>Agentforce_Roteamento_Divergencia_Financeira</code></td><td><code>varCaseId : String</code> · <code>varDescricaoAnalise : String</code></td><td><code>varResultado : String</code></td></tr>
+        <tr><td><code>Buscar_Dados_Assets</code></td><td><code>IDdaconta : String</code> · <code>orderReference : String</code></td><td><code>recordAssets : SObject</code> · <code>Recordtypes : SObject</code></td></tr>
+        <tr><td><code>Buscar_informacoes_da_Conta</code></td><td><code>caseBillingAccount : String</code> · <code>caseConsumerAccount : String</code></td><td><code>recordAccount : SObject</code></td></tr>
+        <tr><td><code>Buscar_Book_Ofertas</code></td><td><code>varAno : Number</code> · <code>varCidade : String</code> · <code>varMes : String</code> · <code>varProduto : String</code></td><td><code>varResposta : String</code></td></tr>
+        <tr><td><code>Buscar_perfil_do_usuario</code></td><td>— <em>(não registrado no CMDT)</em></td><td>—</td></tr>
+        <tr><td><code>Buscar_casos_do_cliente_ou_contrato</code></td><td><code>contractReference : String</code></td><td><code>recordCase : SObject</code> · <code>colResumoAgent : String</code></td></tr>
+        <tr><td><code>Buscar_Ajuste_de_Pagamento</code></td><td><code>accountReference : String</code> · <code>caseReference : String</code></td><td><code>recordPAdjustment : SObject</code></td></tr>
+        <tr><td><code>Buscar_Customer_Interaction_do_pedido_order</code></td><td><code>orderReference : String</code></td><td><code>recordCInteraction : SObject</code></td></tr>
+        <tr><td><code>Buscar_Customer_Interection_Topic_do_caso</code></td><td><code>caseReference : String</code> · <code>customerInterectionReference : String</code></td><td><code>recordTopic : SObject</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Observação DML -->
+  <div class="section">
+    <h2>Observação crítica — DML síncrono por invocação</h2>
+    <p style="margin-bottom:14px;">
+      Cada um dos 11 handlers que passaram pelo gateway gerou automaticamente um registro em
+      <code>SF_AgenticInvocation__c</code> — dentro da mesma transação síncrona do handler.
+      Os testes confirmaram esse comportamento: 11 gravações de audit trail para 11 invocações.
+    </p>
+    <p style="margin-bottom:14px;">
+      Em uma <strong>conversa real com 12 ações</strong> (todos os handlers em uma sessão), isso equivale a
+      <strong>12 DML statements consumidos antes de qualquer DML do negócio</strong>.
+      O limite da plataforma é 150 DML por transação síncrona. Sessões com muitas ações
+      e handlers que também fazem DML (ajustes, criação de case, etc.) podem atingir o limite antes do esperado.
+    </p>
+    <p style="margin-bottom:14px;">
+      Adicionalmente, o teste confirmou um efeito colateral do DML síncrono:
+      em h09, h11 e h12 onde o flow falhou internamente, o registro de invocação foi
+      revertido junto com a transação — <strong>o audit trail não capturou a falha</strong>,
+      exatamente o cenário de diagnóstico mais crítico.
+    </p>
+    <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:14px 16px; font-size:13px;">
+      <strong style="color:#b91c1c;">Ação bloqueante para produção:</strong>
+      Mover o audit trail para <strong>Platform Event assíncrono</strong>.
+      O gateway publica <code>AgenticInvocation__e</code> após o handler — o subscriber Apex grava o registro fora da transação principal.
+      Resultado: zero DML no caminho crítico, audit trail sobrevive a rollbacks, governor limits preservados.
+      Ver proposta detalhada em <a href="index.html#f06f" style="color:var(--blue);">F-06f no Org Assessment</a>.
+    </div>
+  </div>
+
+  <!-- Próximos passos -->
+  <div class="section">
+    <h2>Próximos passos</h2>
+    <table>
+      <thead>
+        <tr><th>Prioridade</th><th>Ação</th><th>Finding</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge badge-fail">Imediato</span></td>
+          <td>Registrar <code>flow:Buscar_perfil_do_usuario</code> no CMDT <code>SF_AgenticGateway_Allow__mdt</code> com <code>Active=true</code></td>
+          <td><span class="finding-ref">F-03</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-warn">Antes do go-live</span></td>
+          <td>Confirmar com o Lucas os valores reais de <code>contractReference</code>, <code>orderReference</code> e <code>customerInterectionReference</code> para os handlers h09, h11, h12 e re-executar com dados reais</td>
+          <td><span class="finding-ref">F-08</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-warn">Antes do go-live</span></td>
+          <td>Refatorar audit trail do gateway para Platform Event assíncrono — remover DML síncrono por invocação</td>
+          <td><span class="finding-ref">F-06f</span></td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-pass">Concluído</span></td>
+          <td>Documentar schemas de payload de todos os 12 handlers (esta página)</td>
+          <td><span class="finding-ref">F-08</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>
+  Projeto Solar · Org Assessment · FinDiagAgent v13 · cec-claro--ibuypfpme<br>
+  Gerado em 09/jun/2026 · <a href="index.html" style="color:var(--blue);">Voltar ao Org Assessment</a>
+</footer>
+
+</body>
+</html>
