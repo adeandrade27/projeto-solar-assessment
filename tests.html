@@ -261,7 +261,7 @@
 
         <tr style="background:#fff5f5;">
           <td>h08</td>
-          <td><code>flow:Buscar_perfil_do_usuario</code></td>
+          <td><code>flow:Buscar_perfil_do_usuario_em_conversa</code></td>
           <td>Flow</td>
           <td><span class="badge badge-blocked">BLOQUEADO</span></td>
           <td><span class="badge badge-fail">Not in allow-list</span></td>
@@ -269,8 +269,8 @@
         </tr>
         <tr class="detail-row">
           <td colspan="6">
-            <strong>Erro:</strong> <code>SF_AgenticGateway.SF_AgenticGatewayException: Handler not in allow-list: flow:Buscar_perfil_do_usuario</code><br>
-            <strong style="display:block;margin-top:6px;">Ação:</strong> Adicionar registro ativo no CMDT com <code>DispatchType=flow</code> e <code>Target=Buscar_perfil_do_usuario</code>.
+            <strong>Erro:</strong> <code>SF_AgenticGateway.SF_AgenticGatewayException: Handler not in allow-list: flow:Buscar_perfil_do_usuario_em_conversa</code><br>
+            <strong style="display:block;margin-top:6px;">Ação:</strong> Adicionar registro ativo no CMDT com <code>DispatchType=flow</code> e <code>Target=Buscar_perfil_do_usuario_em_conversa</code>.
           </td>
         </tr>
 
@@ -377,7 +377,7 @@
         <tr><td><code>Buscar_Dados_Assets</code></td><td><code>IDdaconta : String</code> · <code>orderReference : String</code></td><td><code>recordAssets : SObject</code> · <code>Recordtypes : SObject</code></td></tr>
         <tr><td><code>Buscar_informacoes_da_Conta</code></td><td><code>caseBillingAccount : String</code> · <code>caseConsumerAccount : String</code></td><td><code>recordAccount : SObject</code></td></tr>
         <tr><td><code>Buscar_Book_Ofertas</code></td><td><code>varAno : Number</code> · <code>varCidade : String</code> · <code>varMes : String</code> · <code>varProduto : String</code></td><td><code>varResposta : String</code></td></tr>
-        <tr><td><code>Buscar_perfil_do_usuario</code></td><td>— <em>(não registrado no CMDT)</em></td><td>—</td></tr>
+        <tr><td><code>Buscar_perfil_do_usuario_em_conversa</code></td><td>— <em>(não registrado no CMDT)</em></td><td>—</td></tr>
         <tr><td><code>Buscar_casos_do_cliente_ou_contrato</code></td><td><code>contractReference : String</code></td><td><code>recordCase : SObject</code> · <code>colResumoAgent : String</code></td></tr>
         <tr><td><code>Buscar_Ajuste_de_Pagamento</code></td><td><code>accountReference : String</code> · <code>caseReference : String</code></td><td><code>recordPAdjustment : SObject</code></td></tr>
         <tr><td><code>Buscar_Customer_Interaction_do_pedido_order</code></td><td><code>orderReference : String</code></td><td><code>recordCInteraction : SObject</code></td></tr>
@@ -425,7 +425,7 @@
       <tbody>
         <tr>
           <td><span class="badge badge-fail">Imediato</span></td>
-          <td>Registrar <code>flow:Buscar_perfil_do_usuario</code> no CMDT <code>SF_AgenticGateway_Allow__mdt</code> com <code>Active=true</code></td>
+          <td>Registrar <code>flow:Buscar_perfil_do_usuario_em_conversa</code> no CMDT <code>SF_AgenticGateway_Allow__mdt</code> com <code>Active=true</code></td>
           <td><span class="finding-ref">F-03</span></td>
         </tr>
         <tr>

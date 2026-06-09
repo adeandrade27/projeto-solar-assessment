@@ -556,15 +556,15 @@
         Risco de confusão no deploy e na auditoria. Sem limpeza, o manifest de deploy fica poluído.
         <br><br>
         Adicionalmente, o smoke test de 09/jun/2026 identificou que o handler
-        <strong><code>flow:Buscar_perfil_do_usuario</code></strong> — um dos 12 handlers ativos mapeados —
+        <strong><code>flow:Buscar_perfil_do_usuario_em_conversa</code></strong> — um dos 12 handlers ativos mapeados —
         <strong>não consta no CMDT allow-list</strong> (<code>SF_AgenticGateway_Allow__mdt</code>).
         Qualquer chamada do agente a esse handler falha silenciosamente com
         <code>Handler not in allow-list</code>. O agente não consegue consultar perfil do usuário no estado atual.
       </div>
       <div class="finding-action">
         <strong>Ação 1:</strong> Limpar os 32 registros <code>Active=false</code> ou documentar intencionalmente como legacy antes do GMUD.<br>
-        <strong>Ação 2:</strong> Adicionar registro ativo no CMDT para <code>flow:Buscar_perfil_do_usuario</code>
-        — confirmar com o Lucas o nome exato do Flow e o schema de payload esperado antes de ativar.
+        <strong>Ação 2:</strong> Adicionar registro ativo no CMDT para <code>flow:Buscar_perfil_do_usuario_em_conversa</code>
+        — confirmar com o Lucas o schema de payload esperado antes de ativar.
       </div>
     </div>
 
@@ -804,7 +804,7 @@
         <code>SF_AgenticGateway</code>. Resultados:
         <ul style="margin:8px 0 0 16px; line-height:1.8;">
           <li><strong>11/12 handlers passam pelo gateway</strong> (CMDT allow-list ok, prefix ok)</li>
-          <li><strong>1/12 bloqueado</strong>: <code>flow:Buscar_perfil_do_usuario</code> — ausente do allow-list (ver F-03)</li>
+          <li><strong>1/12 bloqueado</strong>: <code>flow:Buscar_perfil_do_usuario_em_conversa</code> — ausente do allow-list (ver F-03)</li>
           <li><strong>Apex handlers</strong> (<code>SF_FinDiagHistoricalInvoicesHandler</code>, <code>SF_FinDiagInvoiceDetailsHandler</code>)
               retornam erro de validação própria: <em>"startDate é obrigatório"</em> e <em>"invoiceId é obrigatório"</em>
               — o gateway despacha corretamente, mas o schema de payload usado pelo agente precisa incluir esses campos</li>
