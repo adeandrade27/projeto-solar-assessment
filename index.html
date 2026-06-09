@@ -541,15 +541,23 @@
     <div class="finding critical">
       <div class="finding-header">
         <span class="finding-id">F-03</span>
-        <span class="finding-title">32 registros CMDT Active=false</span>
+        <span class="finding-title">32 registros CMDT Active=false + 1 handler ausente do allow-list</span>
         <span class="badge badge-critical">Crítico</span>
       </div>
       <div class="finding-body">
         Registros legacy IBM com <code>Target='teste'</code>, <code>'teste1'</code>, <code>'teste4'</code> ainda presentes.
         Risco de confusão no deploy e na auditoria. Sem limpeza, o manifest de deploy fica poluído.
+        <br><br>
+        Adicionalmente, o smoke test de 09/jun/2026 identificou que o handler
+        <strong><code>flow:Buscar_perfil_do_usuario</code></strong> — um dos 12 handlers ativos mapeados —
+        <strong>não consta no CMDT allow-list</strong> (<code>SF_AgenticGateway_Allow__mdt</code>).
+        Qualquer chamada do agente a esse handler falha silenciosamente com
+        <code>Handler not in allow-list</code>. O agente não consegue consultar perfil do usuário no estado atual.
       </div>
       <div class="finding-action">
-        <strong>Ação:</strong> Limpar registros ou documentar intencionalmente que são legacy antes do GMUD.
+        <strong>Ação 1:</strong> Limpar os 32 registros <code>Active=false</code> ou documentar intencionalmente como legacy antes do GMUD.<br>
+        <strong>Ação 2:</strong> Adicionar registro ativo no CMDT para <code>flow:Buscar_perfil_do_usuario</code>
+        — confirmar com o Lucas o nome exato do Flow e o schema de payload esperado antes de ativar.
       </div>
     </div>
 
@@ -771,15 +779,27 @@
     <div class="finding medium">
       <div class="finding-header">
         <span class="finding-id">F-08</span>
-        <span class="finding-title">Handlers SF_FinDiag* parcialmente validados</span>
+        <span class="finding-title">Handlers SF_FinDiag* — payload schema não documentado</span>
         <span class="badge badge-medium">Médio</span>
       </div>
       <div class="finding-body">
-        Handlers registrados no CMDT mas sem smoke probe individual — não há como saber se funcionam na sandbox atual
-        sem rodar manualmente.
+        O smoke test de 09/jun/2026 executou os 12 handlers via Anonymous Apex diretamente contra o
+        <code>SF_AgenticGateway</code>. Resultados:
+        <ul style="margin:8px 0 0 16px; line-height:1.8;">
+          <li><strong>11/12 handlers passam pelo gateway</strong> (CMDT allow-list ok, prefix ok)</li>
+          <li><strong>1/12 bloqueado</strong>: <code>flow:Buscar_perfil_do_usuario</code> — ausente do allow-list (ver F-03)</li>
+          <li><strong>Apex handlers</strong> (<code>SF_FinDiagHistoricalInvoicesHandler</code>, <code>SF_FinDiagInvoiceDetailsHandler</code>)
+              retornam erro de validação própria: <em>"startDate é obrigatório"</em> e <em>"invoiceId é obrigatório"</em>
+              — o gateway despacha corretamente, mas o schema de payload usado pelo agente precisa incluir esses campos</li>
+          <li><strong>Flows</strong> retornam <em>"The flow doesn't have a variable with the name…"</em>
+              — os flows esperam variáveis com nomes específicos que diferem do JSON genérico <code>{"caseId":"…"}</code>
+              enviado pelo gateway. O contrato de payload entre o agente e cada flow não está documentado.</li>
+        </ul>
       </div>
       <div class="finding-action">
-        <strong>Ação:</strong> Testar cada handler via SmokeRunner antes do deploy.
+        <strong>Ação:</strong> Documentar o schema de payload esperado por cada handler (quais campos, quais nomes de variáveis de flow).
+        Criar um smoke probe por handler no <code>SfAgenticGatewayBotTemplate_v3</code> com payload válido — atualmente os 14 probes existentes
+        não cobrem os handlers específicos do FinDiag.
       </div>
     </div>
 
@@ -1092,25 +1112,6 @@
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- ══ 7b. Time da conta ══ -->
-  <section>
-    <h2><span class="section-num">7b</span> Time da conta — referência rápida</h2>
-    <table>
-      <thead>
-        <tr><th>Pessoa</th><th>Papel</th><th>Quando acionar</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><strong>Odair Silveri</strong></td><td>Time Salesforce embarcado na Claro</td><td>Dúvidas sobre ações, chamadas de API e estrutura existente</td></tr>
-        <tr><td><strong>Lucas Dos Santos</strong></td><td>FDE / construtor do gateway (Senior TC)</td><td>Arquitetura do gateway/agente — decisões de design</td></tr>
-        <tr><td><strong>Beatriz (Bia)</strong></td><td>Conta Claro</td><td>Leitura de stakeholders / engajamento / regulatório</td></tr>
-        <tr><td><strong>Marcelo Camargo</strong></td><td>Principal EA — recém chegado ao time</td><td>Levantou F-01; co-revisor deste assessment</td></tr>
-        <tr><td><strong>Glaucio Valente</strong></td><td>Named AE</td><td>Confirmou esteira Copado + GitLab</td></tr>
-        <tr><td><strong>Priscila Mahayri</strong></td><td>Deployment Strategist Director</td><td>Coordenação FDE / acesso à sandbox</td></tr>
-        <tr><td><strong>Davi</strong></td><td>Time</td><td>—</td></tr>
-      </tbody>
-    </table>
   </section>
 
   <!-- ══ 8. Recomendações Pré-Produção ══ -->
