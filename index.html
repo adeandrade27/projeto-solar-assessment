@@ -561,6 +561,74 @@
       </div>
     </div>
 
+    <div class="finding critical">
+      <div class="finding-header">
+        <span class="finding-id">F-06f</span>
+        <span class="finding-title">DML síncrono no gateway por ação — bloqueio de produção em org de grande porte</span>
+        <span class="badge badge-critical">Crítico ↑</span>
+      </div>
+      <div class="finding-body">
+        O <code>SF_AgenticGateway</code> grava um registro em <code>SF_AgenticInvocation__c</code> de forma <strong>síncrona</strong>
+        a cada ação do agente — dentro da mesma transação Apex que executa o handler.
+        Em uma org de grande porte como a Claro Brasil, esse padrão é um <strong>bloqueio de produção</strong>:
+        <ul style="margin:8px 0 0 16px; line-height:1.9;">
+          <li><strong>Governor limit de DML:</strong> Salesforce limita 150 DML statements por transação síncrona.
+              Com 12 handlers e sessões de até 44 action-steps, uma única conversa pode consumir
+              <strong>44 DML statements</strong> só em audit trail — antes de qualquer DML dos próprios handlers.</li>
+          <li><strong>CPU limit:</strong> O cálculo HMAC-SHA256 inline a cada chamada adiciona CPU mensurável.
+              Sessões longas com múltiplas ações se aproximam do limite de 10.000ms sem nenhum trabalho de negócio.</li>
+          <li><strong>Contenção em pico de atendimento:</strong> Em call center com centenas de atendentes simultâneos,
+              cada sessão concorre pelo mesmo pool de recursos síncronos. Um único pico de volume pode
+              causar <code>APEX_CPU_TIME_LIMIT_EXCEEDED</code> ou <code>DML limit exceeded</code> em cascata —
+              derrubando o agente para todos os operadores ao mesmo tempo.</li>
+          <li><strong>Dados de telemetria perdidos em erro:</strong> Se qualquer etapa da transação falhar após o DML,
+              o Salesforce faz rollback do audit trail inteiro — o registro de invocação desaparece silenciosamente,
+              exatamente quando mais seria necessário para diagnóstico.</li>
+        </ul>
+        O padrão correto para audit trail em agentes é assíncrono: publicar um Platform Event ou enfileirar um Queueable,
+        desacoplando o registro da transação principal. O smoke test de 09/jun/2026 confirma que o DML ocorre
+        a cada invocação — 11 de 12 handlers dispararam a gravação.
+      </div>
+      <div class="finding-action">
+        <strong>Ação bloqueante (não vai para produção sem resolver):</strong> Refatorar o audit trail do
+        <code>SF_AgenticGateway</code> para publicação assíncrona via Platform Event antes do go-live.
+        Proposta detalhada abaixo.
+      </div>
+      <div style="margin-top:16px; overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; font-size:13px;">
+          <thead>
+            <tr style="background:#f3f4f6;">
+              <th style="padding:8px 12px; text-align:left; border:1px solid var(--border); width:20%;">Camada</th>
+              <th style="padding:8px 12px; text-align:left; border:1px solid var(--border); width:38%;">DE (atual)</th>
+              <th style="padding:8px 12px; text-align:left; border:1px solid var(--border); width:42%;">PARA (produção)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding:8px 12px; border:1px solid var(--border); font-weight:600;">Controle de acesso</td>
+              <td style="padding:8px 12px; border:1px solid var(--border);">Prefix validation + CMDT allow-list consultados a cada chamada — SOQL síncrono por invocação</td>
+              <td style="padding:8px 12px; border:1px solid var(--border);">Confiar na camada nativa do Agentforce (Agent Builder controla quais ações o agente pode invocar). Remover CMDT lookup síncrono; manter apenas como validação de deploy-time.</td>
+            </tr>
+            <tr style="background:#fafafa;">
+              <td style="padding:8px 12px; border:1px solid var(--border); font-weight:600;">Audit trail</td>
+              <td style="padding:8px 12px; border:1px solid var(--border);">DML síncrono em <code>SF_AgenticInvocation__c</code> com HMAC-SHA256 a cada chamada — consome DML limit por ação do agente</td>
+              <td style="padding:8px 12px; border:1px solid var(--border);">Publicar Platform Event por chamada; Queueable consome o evento e grava o registro assincronamente — zero impacto nos governor limits da sessão principal.</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px; border:1px solid var(--border); font-weight:600;">HMAC / integridade</td>
+              <td style="padding:8px 12px; border:1px solid var(--border);">HMAC-SHA256 calculado inline, adicionando CPU a cada invocação</td>
+              <td style="padding:8px 12px; border:1px solid var(--border);">Manter HMAC apenas para ações de escrita (DML handlers). Ações read-only (queries, flows de consulta) não precisam de integridade de payload — o dado não é persistido.</td>
+            </tr>
+            <tr style="background:#fafafa;">
+              <td style="padding:8px 12px; border:1px solid var(--border); font-weight:600;">Impacto esperado</td>
+              <td style="padding:8px 12px; border:1px solid var(--border);">12+ DML + 12 SOQL + 12 cálculos HMAC por conversa com 12 ações</td>
+              <td style="padding:8px 12px; border:1px solid var(--border); color:var(--green); font-weight:600;">0 DML síncrono + 0 SOQL por ação de leitura — estimativa: redução de 40–60% no consumo de CPU e DML por sessão.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="finding-group-label">🟠 Alto — resolver no sandbox antes do go-live</div>
 
     <div class="finding high">
@@ -683,64 +751,6 @@
       <div class="finding-action">
         <strong>Ação:</strong> Os grupos H (out-of-scope, 4 casos) e I (PII + prompt leak, 3 casos) do <code>FinDiag_Regression</code>
         cobrem isso — executar e exigir 100% de acerto como critério de corte obrigatório no gate de CI.
-      </div>
-    </div>
-
-    <div class="finding high">
-      <div class="finding-header">
-        <span class="finding-id">F-06f</span>
-        <span class="finding-title">Gateway — camadas de segurança redundantes aumentam custo por ação</span>
-        <span class="badge badge-high">Alto</span>
-      </div>
-      <div class="finding-body">
-        O <code>SF_AgenticGateway</code> executa três verificações em sequência antes de qualquer trabalho útil:
-        <strong>(1)</strong> validação de prefixo (<code>apex:</code>, <code>flow:</code>, etc.),
-        <strong>(2)</strong> consulta ao CMDT allow-list (<code>SF_AgenticGateway_Allow__mdt</code>),
-        <strong>(3)</strong> DML síncrono no <code>SF_AgenticInvocation__c</code> com HMAC-SHA256 por chamada.
-        O Agentforce já impõe sua própria camada de controle — o agente só pode invocar ações explicitamente
-        configuradas no Agent Builder; qualquer ação não registrada é bloqueada pela plataforma antes de chegar ao gateway.
-        Com 12 handlers ativos e sessões observadas de 3–44 action-steps, isso representa
-        <strong>12+ DML síncronos e 3 verificações adicionais por conversa</strong> que a plataforma nativa
-        já cobriria com zero custo extra. O smoke test de 09/jun/2026 confirmou o comportamento:
-        11 de 12 handlers passam pelo gateway, mas cada invocação consome CPU, SOQL e DML antes do handler executar.
-        Em produção com volume real, essa duplicação vai pressionar governor limits (CPU 10k ms, DML 150) antes do esperado
-        e contribui diretamente para o consumo elevado de créditos observado (~22 créditos/conversa em BSIM).
-      </div>
-      <div class="finding-action">
-        <strong>Ação:</strong> Avaliar com o Lucas a simplificação do gateway para produção conforme proposta abaixo.
-      </div>
-      <div style="margin-top:16px; overflow-x:auto;">
-        <table style="width:100%; border-collapse:collapse; font-size:13px;">
-          <thead>
-            <tr style="background:#f3f4f6;">
-              <th style="padding:8px 12px; text-align:left; border:1px solid var(--border); width:20%;">Camada</th>
-              <th style="padding:8px 12px; text-align:left; border:1px solid var(--border); width:38%;">DE (atual)</th>
-              <th style="padding:8px 12px; text-align:left; border:1px solid var(--border); width:42%;">PARA (produção)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style="padding:8px 12px; border:1px solid var(--border); font-weight:600;">Controle de acesso</td>
-              <td style="padding:8px 12px; border:1px solid var(--border);">Prefix validation + CMDT allow-list consultados a cada chamada — SOQL síncrono por invocação</td>
-              <td style="padding:8px 12px; border:1px solid var(--border);">Confiar na camada nativa do Agentforce (Agent Builder controla quais ações o agente pode invocar). Remover CMDT lookup síncrono; manter apenas como validação de deploy-time.</td>
-            </tr>
-            <tr style="background:#fafafa;">
-              <td style="padding:8px 12px; border:1px solid var(--border); font-weight:600;">Audit trail</td>
-              <td style="padding:8px 12px; border:1px solid var(--border);">DML síncrono em <code>SF_AgenticInvocation__c</code> com HMAC-SHA256 a cada chamada — consome DML limit por ação do agente</td>
-              <td style="padding:8px 12px; border:1px solid var(--border);">Publicar Platform Event por chamada; Queueable consome o evento e grava o registro assincronamente — zero impacto nos governor limits da sessão principal.</td>
-            </tr>
-            <tr>
-              <td style="padding:8px 12px; border:1px solid var(--border); font-weight:600;">HMAC / integridade</td>
-              <td style="padding:8px 12px; border:1px solid var(--border);">HMAC-SHA256 calculado inline, adicionando CPU a cada invocação</td>
-              <td style="padding:8px 12px; border:1px solid var(--border);">Manter HMAC apenas para ações de escrita (DML handlers). Ações read-only (queries, flows de consulta) não precisam de integridade de payload — o dado não é persistido.</td>
-            </tr>
-            <tr style="background:#fafafa;">
-              <td style="padding:8px 12px; border:1px solid var(--border); font-weight:600;">Impacto esperado</td>
-              <td style="padding:8px 12px; border:1px solid var(--border);">12+ DML + 12 SOQL + 12 cálculos HMAC por conversa com 12 ações</td>
-              <td style="padding:8px 12px; border:1px solid var(--border); color:var(--green); font-weight:600;">0 DML síncrono + 0 SOQL por ação de leitura — estimativa: redução de 40–60% no consumo de CPU e DML por sessão.</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
 
