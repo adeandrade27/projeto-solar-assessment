@@ -160,7 +160,7 @@
       <div class="score-label">IBM Legado</div>
       <div class="score-name">Agente Diagnóstico Financeiro</div>
       <div class="score-num">28</div>
-      <div class="score-sub">Agentforce Builder clássico<br>9 tópicos hardcoded · sem git · sem testes</div>
+      <div class="score-sub">Agentforce Builder clássico<br>9 tópicos · 11 ações exportadas (IBM declara 16) · sem git · sem testes</div>
     </div>
     <div class="score-card mid">
       <div class="score-label">Lucas · FinDiagAgent v15</div>
@@ -203,7 +203,7 @@
       </tr>
       <tr>
         <td><div class="dim">Complexidade de arquitetura</div><div class="dim-weight">peso 15</div></td>
-        <td><span class="chip chip-red">❌ Alta · frágil</span><br><small>9 tópicos independentes com IDs hardcoded do org <code>_16jHZ0000005Rdt</code>. Troca de org = reescrita.</small></td>
+        <td><span class="chip chip-red">❌ Alta · frágil</span><br><small>9 tópicos · 11 ações com schemas exportados (IBM declara 16 — delta pode ser ações sem schema no pull). IDs hardcoded <code>_16jHZ0000005Rdt</code>. Troca de org = reescrita.</small></td>
         <td><span class="chip chip-yellow">⚠ Médio</span><br><small>1 Router + 1 SubAgent via SF_AgenticGateway. DML síncrono no gateway é risco de governor limit.</small></td>
         <td><span class="chip chip-green">✓ Baixa · intencional</span><br><small>1 Router + N subagentes especializados. Actions Apex com contrato claro. Sem IDs hardcoded.</small></td>
       </tr>
@@ -242,7 +242,9 @@
       <div class="detail-row"><span class="detail-key">Bot ID</span><span class="detail-val">0XxHZ0000001wWb0AI</span></div>
       <div class="detail-row"><span class="detail-key">Versão ativa</span><span class="detail-val">v10 (Builder clássico)</span></div>
       <div class="detail-row"><span class="detail-key">Studio</span><span class="detail-val">Agentforce Builder (antigo)</span></div>
-      <div class="detail-row"><span class="detail-key">Tópicos</span><span class="detail-val">9 + 1 ação KB global</span></div>
+      <div class="detail-row"><span class="detail-key">Tópicos</span><span class="detail-val">9 tópicos</span></div>
+      <div class="detail-row"><span class="detail-key">Ações (exportadas)</span><span class="detail-val">11 locais + 1 KB global</span></div>
+      <div class="detail-row"><span class="detail-key">Ações (IBM declara)</span><span class="detail-val">~16 (delta = ações sem schema no pull)</span></div>
       <div class="detail-row"><span class="detail-key">Ações Apex</span><span class="detail-val">Nenhuma (só flows legados)</span></div>
       <div class="detail-row"><span class="detail-key">Artefatos em git</span><span class="detail-val"><span class="chip chip-red">Não</span></span></div>
       <div class="detail-row"><span class="detail-key">Testes</span><span class="detail-val"><span class="chip chip-red">0 automatizados</span></span></div>
@@ -290,7 +292,7 @@
   <div class="finding risk">
     <div class="finding-label">IBM — Risco Crítico</div>
     <div class="finding-title">IDs de org hardcoded em todos os artefatos</div>
-    <p>Os 9 tópicos carregam o suffix <code>_16jHZ0000005Rdt</code> (ID do org de origem). Uma migração para sandbox <code>partial</code> ou para produção exige remapear manualmente cada referência — não é possível fazer deploy automatizado.</p>
+    <p>Os 9 tópicos (com 11 ações exportadas — IBM declara ~16, delta provável são ações sem schema no pull) carregam o suffix <code>_16jHZ0000005Rdt</code> (ID do org de origem). Uma migração para sandbox <code>partial</code> ou para produção exige remapear manualmente cada referência — não é possível fazer deploy automatizado.</p>
   </div>
 
   <div class="finding warn">
