@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projeto Solar — Estudo de Manutenibilidade · IBM vs Lucas vs V2</title>
+  <style>
+    :root {
+      --red:    #dc2626;
+      --orange: #ea580c;
+      --yellow: #ca8a04;
+      --gray:   #6b7280;
+      --green:  #16a34a;
+      --blue:   #2563eb;
+      --bg:     #f9fafb;
+      --card:   #ffffff;
+      --border: #e5e7eb;
+      --text:   #111827;
+      --muted:  #6b7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #1d4ed8 100%);
+      color: #fff; padding: 40px 48px 32px;
+    }
+    .header-eyebrow {
+      font-size: 11px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; opacity: .7; margin-bottom: 8px;
+    }
+    .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+    .header-sub { font-size: 14px; opacity: .8; margin-top: 4px; }
+    .header-meta { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+    .header-meta span { font-size: 12px; opacity: .8; }
+
+    .content { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+    /* Score summary */
+    .score-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px;
+    }
+    .score-card {
+      background: var(--card); border: 2px solid var(--border); border-radius: 12px;
+      padding: 24px; text-align: center;
+    }
+    .score-card.winner { border-color: #16a34a; }
+    .score-card.mid    { border-color: #ca8a04; }
+    .score-card.low    { border-color: #dc2626; }
+    .score-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .1em; color: var(--muted); margin-bottom: 8px; }
+    .score-name { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .score-num {
+      font-size: 52px; font-weight: 800; line-height: 1;
+      margin: 12px 0 8px;
+    }
+    .score-card.winner .score-num { color: #16a34a; }
+    .score-card.mid    .score-num { color: #ca8a04; }
+    .score-card.low    .score-num { color: #dc2626; }
+    .score-sub { font-size: 12px; color: var(--muted); }
+    .badge-winner { display: inline-block; background: #dcfce7; color: #15803d;
+      font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 999px;
+      margin-top: 10px; }
+
+    /* Dimension table */
+    .section-title {
+      font-size: 18px; font-weight: 700; margin: 40px 0 16px;
+      padding-bottom: 10px; border-bottom: 2px solid var(--border);
+    }
+    .dim-table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+    .dim-table th {
+      background: #f1f5f9; padding: 10px 14px; text-align: left;
+      font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .06em; color: var(--muted); border: 1px solid var(--border);
+    }
+    .dim-table td { padding: 12px 14px; border: 1px solid var(--border); vertical-align: top; }
+    .dim-table tr:nth-child(even) td { background: #f9fafb; }
+    .dim { font-weight: 700; font-size: 13px; }
+    .dim-weight { font-size: 11px; color: var(--muted); font-weight: 400; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 700;
+      white-space: nowrap;
+    }
+    .chip-green  { background: #dcfce7; color: #15803d; }
+    .chip-yellow { background: #fef9c3; color: #854d0e; }
+    .chip-red    { background: #fee2e2; color: #b91c1c; }
+    .chip-gray   { background: #f3f4f6; color: #4b5563; }
+
+    /* Detail cards */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; }
+    .card-title { font-size: 13px; font-weight: 700; margin-bottom: 12px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .card-title.ibm   { color: #1e40af; }
+    .card-title.lucas { color: #7c3aed; }
+    .card-title.v2    { color: #15803d; }
+    .detail-row { display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 8px; gap: 8px; }
+    .detail-key { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .detail-val { font-size: 12px; font-weight: 600; text-align: right; }
+
+    /* Finding cards */
+    .finding {
+      background: var(--card); border-left: 4px solid var(--border);
+      border-radius: 0 8px 8px 0; padding: 16px 20px; margin-bottom: 14px;
+    }
+    .finding.risk   { border-color: var(--red); }
+    .finding.warn   { border-color: var(--yellow); }
+    .finding.info   { border-color: var(--blue); }
+    .finding.ok     { border-color: var(--green); }
+    .finding-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; margin-bottom: 4px; }
+    .finding.risk   .finding-label { color: var(--red); }
+    .finding.warn   .finding-label { color: var(--yellow); }
+    .finding.info   .finding-label { color: var(--blue); }
+    .finding.ok     .finding-label { color: var(--green); }
+    .finding-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .finding p { font-size: 13px; color: #374151; line-height: 1.6; }
+    code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px;
+      font-size: 12px; font-family: "SF Mono", monospace; }
+
+    /* Rec table */
+    .rec-table { width: 100%; border-collapse: collapse; margin-bottom: 32px; }
+    .rec-table th { background: #1e3a5f; color: #fff; padding: 10px 14px;
+      font-size: 12px; text-align: left; }
+    .rec-table td { padding: 12px 14px; border: 1px solid var(--border); vertical-align: top; font-size: 13px; }
+    .rec-table tr:nth-child(even) td { background: #f9fafb; }
+    .p0 { background: #fee2e2 !important; font-weight: 700; color: var(--red); }
+    .p1 { background: #fef9c3 !important; font-weight: 700; color: #854d0e; }
+    .p2 { background: #f0fdf4 !important; font-weight: 700; color: #15803d; }
+
+    footer { text-align: center; padding: 32px; color: var(--muted); font-size: 12px; }
+    @media(max-width:720px) {
+      .score-grid,.cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Projeto Solar · Claro Brasil · jun/2026</div>
+  <h1>Estudo de Manutenibilidade — FinDiag Agents</h1>
+  <div class="header-sub">Comparativo técnico: IBM (legado) · Lucas / FinDiagAgent v15 · Salesforce V2</div>
+  <div class="header-meta">
+    <span>📅 12/jun/2026</span>
+    <span>🏢 Sandbox: cec-claro--ibuypfpme</span>
+    <span>🎯 Critério principal: custo de manutenção operacional</span>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- Score summary -->
+  <div class="section-title">Score de Manutenibilidade (0–100)</div>
+  <div class="score-grid">
+    <div class="score-card low">
+      <div class="score-label">IBM Legado</div>
+      <div class="score-name">Agente Diagnóstico Financeiro</div>
+      <div class="score-num">28</div>
+      <div class="score-sub">Agentforce Builder clássico<br>9 tópicos hardcoded · sem git · sem testes</div>
+    </div>
+    <div class="score-card mid">
+      <div class="score-label">Lucas · FinDiagAgent v15</div>
+      <div class="score-name">FinDiagAgent</div>
+      <div class="score-num">61</div>
+      <div class="score-sub">Agent Studio Spring'26 · gateway centralizado<br>1 subagente · sem testes funcionais completos</div>
+    </div>
+    <div class="score-card winner">
+      <div class="score-label">Salesforce V2</div>
+      <div class="score-name">Agentforce FinDiag V2</div>
+      <div class="score-num">84</div>
+      <div class="score-sub">Code-first · Apex testado · .agent em git<br>SVA mascarado · PII guard explícito</div>
+      <div><span class="badge-winner">✓ Recomendado para go-live</span></div>
+    </div>
+  </div>
+
+  <!-- Dimension table -->
+  <div class="section-title">Dimensões avaliadas</div>
+  <table class="dim-table">
+    <thead>
+      <tr>
+        <th style="width:22%">Dimensão <span class="dim-weight">(peso)</span></th>
+        <th style="width:26%">IBM Legado</th>
+        <th style="width:26%">Lucas · v15</th>
+        <th style="width:26%">SF V2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="dim">Rastreabilidade de mudança</div><div class="dim-weight">peso 20</div></td>
+        <td><span class="chip chip-red">❌ Sem git · clique-a-clique</span><br><small>Qualquer mudança é manual no Builder. Sem histórico, sem diff, sem rollback.</small></td>
+        <td><span class="chip chip-yellow">⚠ Parcial</span><br><small><code>.agent</code> file existe mas só o artefato raiz — flows e CMDT modificados fora do git.</small></td>
+        <td><span class="chip chip-green">✓ Completo</span><br><small>Todos os artefatos em git (<code>.agent</code>, flows, Apex, CMDT). Deploy via pipeline.</small></td>
+      </tr>
+      <tr>
+        <td><div class="dim">Testabilidade</div><div class="dim-weight">peso 20</div></td>
+        <td><span class="chip chip-red">❌ Nenhum teste</span><br><small>5 casos manuais com mesmo CaseId. Sem automação, sem guardrail.</small></td>
+        <td><span class="chip chip-yellow">⚠ Estrutura presente</span><br><small>Suíte <code>FinDiag_StressTest</code> criada mas 0 casos de guardrail P0/P2. DML síncrono não testado sob carga.</small></td>
+        <td><span class="chip chip-green">✓ Testes unitários Apex</span><br><small><code>AgentInvoicesActionV2Test</code> e <code>AgentInvoiceDetailsActionV2Test</code> presentes. Evals YAML prontos.</small></td>
+      </tr>
+      <tr>
+        <td><div class="dim">Complexidade de arquitetura</div><div class="dim-weight">peso 15</div></td>
+        <td><span class="chip chip-red">❌ Alta · frágil</span><br><small>9 tópicos independentes com IDs hardcoded do org <code>_16jHZ0000005Rdt</code>. Troca de org = reescrita.</small></td>
+        <td><span class="chip chip-yellow">⚠ Médio</span><br><small>1 Router + 1 SubAgent via SF_AgenticGateway. DML síncrono no gateway é risco de governor limit.</small></td>
+        <td><span class="chip chip-green">✓ Baixa · intencional</span><br><small>1 Router + N subagentes especializados. Actions Apex com contrato claro. Sem IDs hardcoded.</small></td>
+      </tr>
+      <tr>
+        <td><div class="dim">Segurança &amp; PII</div><div class="dim-weight">peso 15</div></td>
+        <td><span class="chip chip-red">❌ Sem controle explícito</span><br><small>Nenhuma instrução de PII no system prompt. Dados brutos repassados ao LLM.</small></td>
+        <td><span class="chip chip-yellow">⚠ Parcial</span><br><small>Instrução de PII no system prompt mas sem mascaramento no Apex. Depende do LLM "lembrar" a regra.</small></td>
+        <td><span class="chip chip-green">✓ Enforced em Apex</span><br><small>SVAs mascarados no <code>AgentInvoicesActionV2</code> antes de chegar ao LLM. PII guard explícito no system prompt e no Apex.</small></td>
+      </tr>
+      <tr>
+        <td><div class="dim">Portabilidade entre orgs</div><div class="dim-weight">peso 15</div></td>
+        <td><span class="chip chip-red">❌ Presa ao org</span><br><small>Todos os IDs com suffix <code>_16jHZ0000005Rdt</code>. Deploy em outro org exige remapear manualmente cada referência.</small></td>
+        <td><span class="chip chip-yellow">⚠ Parcial</span><br><small>CMDT <code>SF_AgenticGateway_Allow__mdt</code> abstrai o handler, mas IDs de flows ainda hardcoded em alguns pontos.</small></td>
+        <td><span class="chip chip-green">✓ Alta</span><br><small>Sem IDs de org. Deploy por <code>sfdx force:source:deploy</code>. Pronto para pipeline GitLab + Copado.</small></td>
+      </tr>
+      <tr>
+        <td><div class="dim">Observabilidade</div><div class="dim-weight">peso 10</div></td>
+        <td><span class="chip chip-red">❌ Nenhuma</span><br><small>Sem logging estruturado. Único sinal disponível: conversas no EinsteinCopilot.</small></td>
+        <td><span class="chip chip-yellow">⚠ Parcial</span><br><small><code>SF_AgenticInvocation__c</code> captura DispatchType, latência, status — mas sem dashboard criado.</small></td>
+        <td><span class="chip chip-green">✓ Estruturada</span><br><small>Audit trail via <code>SF_AgenticInvocation__c</code> + outputs tipados no Apex. Base para dashboard imediato.</small></td>
+      </tr>
+      <tr>
+        <td><div class="dim">Onboarding de novo dev</div><div class="dim-weight">peso 5</div></td>
+        <td><span class="chip chip-red">❌ Alto custo</span><br><small>Sem documentação técnica. Conhecimento vive só nos cliques do Builder e nos responsáveis da IBM.</small></td>
+        <td><span class="chip chip-yellow">⚠ Médio</span><br><small>Código comentado, nomes semânticos. Mas dependência implícita do gateway não está documentada para quem chega novo.</small></td>
+        <td><span class="chip chip-green">✓ Baixo custo</span><br><small>System prompt em PT-BR com regras explícitas. Actions com <code>description</code> e contratos de input/output claros no <code>.agent</code>.</small></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Detail cards -->
+  <div class="section-title">Inventário técnico por agente</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-title ibm">🔵 IBM — Agente Diagnóstico Financeiro</div>
+      <div class="detail-row"><span class="detail-key">Bot ID</span><span class="detail-val">0XxHZ0000001wWb0AI</span></div>
+      <div class="detail-row"><span class="detail-key">Versão ativa</span><span class="detail-val">v10 (Builder clássico)</span></div>
+      <div class="detail-row"><span class="detail-key">Studio</span><span class="detail-val">Agentforce Builder (antigo)</span></div>
+      <div class="detail-row"><span class="detail-key">Tópicos</span><span class="detail-val">9 + 1 ação KB global</span></div>
+      <div class="detail-row"><span class="detail-key">Ações Apex</span><span class="detail-val">Nenhuma (só flows legados)</span></div>
+      <div class="detail-row"><span class="detail-key">Artefatos em git</span><span class="detail-val"><span class="chip chip-red">Não</span></span></div>
+      <div class="detail-row"><span class="detail-key">Testes</span><span class="detail-val"><span class="chip chip-red">0 automatizados</span></span></div>
+      <div class="detail-row"><span class="detail-key">IDs hardcoded</span><span class="detail-val"><span class="chip chip-red">Sim (_16jHZ…)</span></span></div>
+      <div class="detail-row"><span class="detail-key">PII guard</span><span class="detail-val"><span class="chip chip-red">Não</span></span></div>
+      <div class="detail-row"><span class="detail-key">Custo estimado/conv.</span><span class="detail-val">~22 créditos (BSIM)</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title lucas">🟣 Lucas — FinDiagAgent v15</div>
+      <div class="detail-row"><span class="detail-key">Bot ID</span><span class="detail-val">0XxHZ0000002H6P0AU</span></div>
+      <div class="detail-row"><span class="detail-key">Versão ativa</span><span class="detail-val">v15 (Agent Studio)</span></div>
+      <div class="detail-row"><span class="detail-key">Studio</span><span class="detail-val">Agent Studio Spring'26</span></div>
+      <div class="detail-row"><span class="detail-key">Estrutura</span><span class="detail-val">1 Router + 1 FinDiag_SubAgent</span></div>
+      <div class="detail-row"><span class="detail-key">Gateway</span><span class="detail-val">SF_AgenticGateway + CMDT</span></div>
+      <div class="detail-row"><span class="detail-key">Artefatos em git</span><span class="detail-val"><span class="chip chip-yellow">Parcial (.agent)</span></span></div>
+      <div class="detail-row"><span class="detail-key">Testes Apex</span><span class="detail-val"><span class="chip chip-yellow">Estrutura criada</span></span></div>
+      <div class="detail-row"><span class="detail-key">Guardrails P0</span><span class="detail-val"><span class="chip chip-red">0 casos</span></span></div>
+      <div class="detail-row"><span class="detail-key">PII guard</span><span class="detail-val"><span class="chip chip-yellow">Só no prompt</span></span></div>
+      <div class="detail-row"><span class="detail-key">Risco técnico</span><span class="detail-val">DML síncrono no gateway</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title v2">🟢 SF V2 — Agentforce FinDiag V2</div>
+      <div class="detail-row"><span class="detail-key">Bot ID</span><span class="detail-val">0XxHZ0000002KaX0AU</span></div>
+      <div class="detail-row"><span class="detail-key">Versão ativa</span><span class="detail-val">v1 (Agent Studio)</span></div>
+      <div class="detail-row"><span class="detail-key">Studio</span><span class="detail-val">Agent Studio Spring'26 · code-first</span></div>
+      <div class="detail-row"><span class="detail-key">Estrutura</span><span class="detail-val">Router + 7 subagentes esp.</span></div>
+      <div class="detail-row"><span class="detail-key">Ações Apex</span><span class="detail-val">AgentInvoicesActionV2 + AgentInvoiceDetailsActionV2</span></div>
+      <div class="detail-row"><span class="detail-key">Artefatos em git</span><span class="detail-val"><span class="chip chip-green">Completo</span></span></div>
+      <div class="detail-row"><span class="detail-key">Testes Apex</span><span class="detail-val"><span class="chip chip-green">2 classes de teste</span></span></div>
+      <div class="detail-row"><span class="detail-key">Evals YAML</span><span class="detail-val"><span class="chip chip-green">8 suítes prontas</span></span></div>
+      <div class="detail-row"><span class="detail-key">PII guard</span><span class="detail-val"><span class="chip chip-green">Enforced em Apex</span></span></div>
+      <div class="detail-row"><span class="detail-key">SVA mascarado</span><span class="detail-val"><span class="chip chip-green">Sim (Apex)</span></span></div>
+    </div>
+  </div>
+
+  <!-- Findings -->
+  <div class="section-title">Riscos de manutenção identificados</div>
+
+  <div class="finding risk">
+    <div class="finding-label">IBM — Risco Crítico</div>
+    <div class="finding-title">Conhecimento de manutenção preso na IBM</div>
+    <p>Qualquer alteração em tópico, instrução ou ação exige acesso ao Builder clássico e conhecimento prévio da estrutura criada pela IBM. Não há documentação, não há git, não há testes. Se o contrato IBM encerrar, o agente congela na versão atual — a Claro não consegue evoluir sozinha.</p>
+  </div>
+
+  <div class="finding risk">
+    <div class="finding-label">IBM — Risco Crítico</div>
+    <div class="finding-title">IDs de org hardcoded em todos os artefatos</div>
+    <p>Os 9 tópicos carregam o suffix <code>_16jHZ0000005Rdt</code> (ID do org de origem). Uma migração para sandbox <code>partial</code> ou para produção exige remapear manualmente cada referência — não é possível fazer deploy automatizado.</p>
+  </div>
+
+  <div class="finding warn">
+    <div class="finding-label">Lucas — Risco Médio</div>
+    <div class="finding-title">DML síncrono no SF_AgenticGateway — risco de governor limit</div>
+    <p>O <code>SF_AgenticGateway</code> grava em <code>SF_AgenticInvocation__c</code> dentro da mesma transação Apex que executa o handler. Em sessões simultâneas, isso consome o limite de DML statements e pode derrubar o agente para todos os operadores ao mesmo tempo. O padrão correto é assíncrono (Platform Event ou Queueable).</p>
+  </div>
+
+  <div class="finding warn">
+    <div class="finding-label">Lucas — Risco Médio</div>
+    <div class="finding-title">Handler de perfil do usuário fora do CMDT allow-list</div>
+    <p><code>Buscar_perfil_do_usuario_em_conversa</code> não consta no <code>SF_AgenticGateway_Allow__mdt</code>. Qualquer chamada falha silenciosamente com <em>"Handler not in allow-list"</em> — o agente não consegue consultar o perfil do operador em produção.</p>
+  </div>
+
+  <div class="finding warn">
+    <div class="finding-label">Lucas — Risco Médio</div>
+    <div class="finding-title">Suíte de testes sem guardrails P0/P2</div>
+    <p>A suíte <code>FinDiag_StressTest</code> tem 0 casos cobrindo blocos de uso restrito (PII, off-topic, prompt injection). O smoke test de 09/jun confirmou a ausência. Sem esses casos, não há gate semântico antes do deploy em produção.</p>
+  </div>
+
+  <div class="finding ok">
+    <div class="finding-label">SF V2 — Ponto Forte</div>
+    <div class="finding-title">PII enforced em Apex — não depende do LLM</div>
+    <p>O mascaramento de SVAs e a proteção de CPF/RG/data de ativação estão implementados no <code>AgentInvoicesActionV2</code> antes dos dados chegarem ao LLM. A regra não pode ser contornada por prompt engenharia — é código, não instrução.</p>
+  </div>
+
+  <div class="finding ok">
+    <div class="finding-label">SF V2 — Ponto Forte</div>
+    <div class="finding-title">Deploy automatizável e portátil</div>
+    <p>Todos os artefatos (<code>.agent</code>, flows, Apex, CMDT) estão em git sem IDs de org. Um <code>sfdx force:source:deploy</code> ou pipeline Copado+GitLab consegue promover do sandbox para produção com gate de evals. A Claro pode manter sem depender da Salesforce PS.</p>
+  </div>
+
+  <!-- Recomendações -->
+  <div class="section-title">Plano de ação recomendado</div>
+  <table class="rec-table">
+    <thead>
+      <tr>
+        <th>Prioridade</th>
+        <th>Ação</th>
+        <th>Responsável</th>
+        <th>Prazo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="p0">P0</td>
+        <td>Adicionar <code>Buscar_perfil_do_usuario_em_conversa</code> ao CMDT allow-list no Lucas/v15 (ou mover para V2)</td>
+        <td>Lucas / SF PS</td>
+        <td>Imediato</td>
+      </tr>
+      <tr>
+        <td class="p0">P0</td>
+        <td>Definir qual agente vai para go-live: recomendação é SF V2. Se mantiver Lucas, corrigir DML síncrono para assíncrono antes de produção</td>
+        <td>Decisão Claro + SF</td>
+        <td>Até 20/jun</td>
+      </tr>
+      <tr>
+        <td class="p1">P1</td>
+        <td>Adicionar ≥1 caso de guardrail P0/P2 (PII, off-topic) na suíte de testes do agente escolhido</td>
+        <td>SF PS</td>
+        <td>Até 27/jun</td>
+      </tr>
+      <tr>
+        <td class="p1">P1</td>
+        <td>Criar dashboard sobre <code>SF_AgenticInvocation__c</code> — disponível agora, sem dependência de sandbox separada</td>
+        <td>SF PS</td>
+        <td>Até 27/jun</td>
+      </tr>
+      <tr>
+        <td class="p1">P1</td>
+        <td>Formalizar manifest Copado (<code>package.xml</code>) com todos os artefatos do agente escolhido e registrar GMUD</td>
+        <td>Claro DevOps + SF</td>
+        <td>Até 30/jun</td>
+      </tr>
+      <tr>
+        <td class="p2">P2</td>
+        <td>Arquivar (desativar, não deletar) o agente IBM legado após go-live confirmado</td>
+        <td>Decisão Claro</td>
+        <td>Pós go-live</td>
+      </tr>
+      <tr>
+        <td class="p2">P2</td>
+        <td>Executar stress test do V2 (SmokeRunner S1..S19 em sessões paralelas) para validar comportamento sob carga</td>
+        <td>SF PS</td>
+        <td>Pós P0/P1</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Argumento político -->
+  <div class="section-title">Argumento para a Claro — preocupação com manutenção</div>
+  <div class="finding info">
+    <div class="finding-label">Narrativa técnica</div>
+    <div class="finding-title">O problema não é "quem constrói" — é "quem mantém"</div>
+    <p>
+      O agente IBM tem score 28/100 de manutenibilidade. Não porque a IBM errou — o Builder clássico simplesmente não foi projetado para ops contínua. Qualquer mudança de regra de negócio (ex: novo prazo Anatel, novo RecordType de caso) exige uma pessoa que conhece o Builder, acesso ao org correto, e mudança manual sem trilha de auditoria.<br><br>
+      O V2 (score 84) inverte esse risco: mudança de regra = commit no git + pipeline. A Claro consegue revisar o diff, aprovar via GMUD, e reverter se necessário — sem depender de vendor. Esse é o critério de "manutenção sustentável" que a preocupação da Claro está apontando.
+    </p>
+  </div>
+
+</div>
+
+<footer>
+  Projeto Solar · Claro Brasil · Estudo gerado em 12/jun/2026 · Sandbox cec-claro--ibuypfpme
+  <br><br>
+  <a href="index.html" style="color:#2563eb;">← Voltar ao Org Assessment</a>
+</footer>
+
+</body>
+</html>
