@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FinDiag Benchmark — Comparação de Respostas</title>
+<style>
+:root{--red:#dc2626;--green:#16a34a;--yellow:#ca8a04;--blue:#2563eb;
+  --bg:#f9fafb;--card:#fff;--border:#e5e7eb;--text:#111827;--muted:#6b7280}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+.header{background:linear-gradient(135deg,#1e3a5f 0%,#1d4ed8 100%);
+  color:#fff;padding:36px 48px 28px}
+.header-eyebrow{font-size:11px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;opacity:.7;margin-bottom:8px}
+.header h1{font-size:26px;font-weight:700;margin-bottom:4px}
+.header-sub{font-size:13px;opacity:.8}
+.content{max-width:1200px;margin:0 auto;padding:36px 24px}
+
+/* Summary bar */
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px}
+.sum-card{background:var(--card);border:2px solid var(--border);border-radius:10px;
+  padding:20px;text-align:center}
+.sum-label{font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+.sum-name{font-size:15px;font-weight:700;margin-bottom:10px}
+.sum-score{font-size:42px;font-weight:800;line-height:1}
+.sum-card.ibm   .sum-score{color:var(--red)}
+.sum-card.lucas .sum-score{color:var(--yellow)}
+.sum-card.v2    .sum-score{color:var(--green)}
+.sum-card.ibm  {border-color:#dc2626}
+.sum-card.lucas{border-color:#ca8a04}
+.sum-card.v2   {border-color:#16a34a}
+.sum-sub{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* Scenario table */
+.section-title{font-size:17px;font-weight:700;margin:32px 0 14px;
+  padding-bottom:8px;border-bottom:2px solid var(--border)}
+.scenario{background:var(--card);border:1px solid var(--border);
+  border-radius:10px;margin-bottom:20px;overflow:hidden}
+.scenario-header{background:#f1f5f9;padding:12px 20px;
+  font-weight:700;font-size:14px;display:flex;align-items:center;gap:12px}
+.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr)}
+.agent-col{padding:16px 18px;border-right:1px solid var(--border)}
+.agent-col:last-child{border-right:none}
+.agent-name{font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.08em;margin-bottom:4px}
+.agent-name.ibm  {color:#1e40af}
+.agent-name.lucas{color:#7c3aed}
+.agent-name.v2   {color:#15803d}
+.metric-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.chip{border-radius:999px;padding:2px 10px;font-size:11px;font-weight:700}
+.chip-green{background:#dcfce7;color:#15803d}
+.chip-red  {background:#fee2e2;color:#b91c1c}
+.chip-gray {background:#f3f4f6;color:#4b5563}
+.ms{font-size:12px;color:var(--muted)}
+.response{font-size:12px;background:#f8fafc;border:1px solid var(--border);
+  border-radius:6px;padding:10px 12px;margin-top:8px;
+  white-space:pre-wrap;word-break:break-all;max-height:180px;overflow-y:auto;
+  font-family:"SF Mono",Menlo,monospace}
+footer{text-align:center;padding:28px;color:var(--muted);font-size:12px}
+@media(max-width:720px){.summary,.scenario-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-eyebrow">Projeto Solar · Claro Brasil · jun/2026</div>
+  <h1>FinDiag Benchmark — Comparação de Respostas</h1>
+  <div class="header-sub">IBM Legado · Lucas / FinDiagAgent v15 · SF V2 · 5 cenários · sandbox cec-claro--ibuypfpme</div>
+</div>
+<div class="content">
+<div class="summary">
+  <div class="sum-card ibm">
+    <div class="sum-label">IBM Legado</div>
+    <div class="sum-score">0%</div>
+    <div class="sum-sub">pass rate · avg 0ms</div>
+  </div>
+  <div class="sum-card lucas">
+    <div class="sum-label">Lucas / FinDiagAgent</div>
+    <div class="sum-score">0%</div>
+    <div class="sum-sub">pass rate · avg 0ms</div>
+  </div>
+  <div class="sum-card v2">
+    <div class="sum-label">SF V2</div>
+    <div class="sum-score">0%</div>
+    <div class="sum-sub">pass rate · avg 0ms</div>
+  </div>
+</div>
+<div class="section-title">Detalhamento por cenário</div>
+<div class="scenario">
+  <div class="scenario-header">⚠️ C01 — Buscar dados do caso</div>
+  <div class="scenario-grid">
+    <div class="agent-col">
+      <div class="agent-name ibm">IBM Legado</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name lucas">Lucas / FinDiagAgent</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name v2">SF V2</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+  </div>
+</div>
+<div class="scenario">
+  <div class="scenario-header">⚠️ C02 — Consultar faturas</div>
+  <div class="scenario-grid">
+    <div class="agent-col">
+      <div class="agent-name ibm">IBM Legado</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name lucas">Lucas / FinDiagAgent</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name v2">SF V2</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+  </div>
+</div>
+<div class="scenario">
+  <div class="scenario-header">⚠️ C03 — Serviços ativos</div>
+  <div class="scenario-grid">
+    <div class="agent-col">
+      <div class="agent-name ibm">IBM Legado</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name lucas">Lucas / FinDiagAgent</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name v2">SF V2</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+  </div>
+</div>
+<div class="scenario">
+  <div class="scenario-header">⚠️ C04 — Guardrail out-of-scope</div>
+  <div class="scenario-grid">
+    <div class="agent-col">
+      <div class="agent-name ibm">IBM Legado</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name lucas">Lucas / FinDiagAgent</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name v2">SF V2</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+  </div>
+</div>
+<div class="scenario">
+  <div class="scenario-header">⚠️ C05 — Guardrail PII</div>
+  <div class="scenario-grid">
+    <div class="agent-col">
+      <div class="agent-name ibm">IBM Legado</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name lucas">Lucas / FinDiagAgent</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+    <div class="agent-col">
+      <div class="agent-name v2">SF V2</div>
+      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
+      <div class="response">sem dado</div>
+    </div>
+  </div>
+</div>
+<footer>
+  Benchmark gerado automaticamente via sf apex run · Projeto Solar · Claro Brasil · jun/2026<br>
+  <a href="../index.html" style="color:#2563eb">← Org Assessment</a> &nbsp;|&nbsp;
+  <a href="../manutencao.html" style="color:#2563eb">← Estudo de Manutenibilidade</a>
+</footer>
+</div></body></html>
