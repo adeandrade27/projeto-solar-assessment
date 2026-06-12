@@ -73,38 +73,38 @@ footer{text-align:center;padding:28px;color:var(--muted);font-size:12px}
 <div class="summary">
   <div class="sum-card ibm">
     <div class="sum-label">IBM Legado</div>
-    <div class="sum-score">0%</div>
-    <div class="sum-sub">pass rate · avg 0ms</div>
+    <div class="sum-score">40%</div>
+    <div class="sum-sub">pass rate · avg 86ms</div>
   </div>
   <div class="sum-card lucas">
     <div class="sum-label">Lucas / FinDiagAgent</div>
-    <div class="sum-score">0%</div>
-    <div class="sum-sub">pass rate · avg 0ms</div>
+    <div class="sum-score">80%</div>
+    <div class="sum-sub">pass rate · avg 338ms</div>
   </div>
   <div class="sum-card v2">
     <div class="sum-label">SF V2</div>
-    <div class="sum-score">0%</div>
-    <div class="sum-sub">pass rate · avg 0ms</div>
+    <div class="sum-score">100%</div>
+    <div class="sum-sub">pass rate · avg 397ms</div>
   </div>
 </div>
 <div class="section-title">Detalhamento por cenário</div>
 <div class="scenario">
-  <div class="scenario-header">⚠️ C01 — Buscar dados do caso</div>
+  <div class="scenario-header">✅ C01 — Buscar dados do caso</div>
   <div class="scenario-grid">
     <div class="agent-col">
       <div class="agent-name ibm">IBM Legado</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">111ms</span></div>
+      <div class="response">{"attributes":{"type":"Case","url":"/services/data/v67.0/sobjects/Case/500HZ00000TBiDBYA1"},"ALaCarteN1Result__c":null,"ALaCarteN2Result__c":null,"ALaCarteN3Result__c":null,"A_la_Carte__c":false,"AccountCustomerType__c":"ASSINANTE_CLARO","AccountDocumentType__c":null,"AccountFormattedDocument__c":"37.278.738/334-34","AccountId":"001HZ00000jow39YAA","ActionTaken__c":null,"AdditionalInformation__c":null,"Amount__c":null,"AppointmentExchange__c":null,"AssetId":"02iHZ000006wETlYAM","AssociatedCase__c":null,"AttachmentName__c":null,"AttemptContactClient1__c":null,"AttemptContactClient2__c":null,"At</div>
     </div>
     <div class="agent-col">
       <div class="agent-name lucas">Lucas / FinDiagAgent</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">567ms</span></div>
+      <div class="response">{"data":"{\"output\":{\"Flow__InterviewStatus\":\"Finished\",\"Flow__InterviewGuid\":\"36943f4c99472ac3763d3aab298a19ebc1b590d-6ef8\",\"recordCase\":{\"attributes\":{\"type\":\"Case\",\"url\":\"/services/data/v67.0/sobjects/Case/500HZ00000TBiDBYA1\"},\"ALaCarteN1Result__c\":null,\"ALaCarteN2Result__c\":null,\"ALaCarteN3Result__c\":null,\"A_la_Carte__c\":false,\"AccountCustomerType__c\":\"ASSINANTE_CLARO\",\"AccountDocumentType__c\":null,\"AccountFormattedDocument__c\":\"37.278.738/334-34\",\"AccountId\":\"001HZ00000jow39YAA\",\"ActionTaken__c\":null,\"AdditionalInformation__c\":null,\"Amount__</div>
     </div>
     <div class="agent-col">
       <div class="agent-name v2">SF V2</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">567ms</span></div>
+      <div class="response">{"data":"{\"output\":{\"Flow__InterviewStatus\":\"Finished\",\"Flow__InterviewGuid\":\"36943f4c99472ac3763d3aab298a19ebc1b590d-6ef8\",\"recordCase\":{\"attributes\":{\"type\":\"Case\",\"url\":\"/services/data/v67.0/sobjects/Case/500HZ00000TBiDBYA1\"},\"ALaCarteN1Result__c\":null,\"ALaCarteN2Result__c\":null,\"ALaCarteN3Result__c\":null,\"A_la_Carte__c\":false,\"AccountCustomerType__c\":\"ASSINANTE_CLARO\",\"AccountDocumentType__c\":null,\"AccountFormattedDocument__c\":\"37.278.738/334-34\",\"AccountId\":\"001HZ00000jow39YAA\",\"ActionTaken__c\":null,\"AdditionalInformation__c\":null,\"Amount__</div>
     </div>
   </div>
 </div>
@@ -113,38 +113,44 @@ footer{text-align:center;padding:28px;color:var(--muted);font-size:12px}
   <div class="scenario-grid">
     <div class="agent-col">
       <div class="agent-name ibm">IBM Legado</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-red">✗ fail</span> <span class="ms">5ms</span></div>
+      <div class="response">FLOW_AUSENTE: Consultar_Faturas_na_API_historical não deployado no sandbox ibuy. IBM executa este flow só no sandbox partial.</div>
     </div>
     <div class="agent-col">
       <div class="agent-name lucas">Lucas / FinDiagAgent</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">417ms</span></div>
+      <div class="response">gateway OK — caso carregado, fatura requer 2ª chamada (AgentGateway + IntegrationProcedure): {"data":"{\"output\":{\"Flow__InterviewStatus\":\"Finished\",\"Flow__InterviewGuid\":\"10190d2c16062cf0dd0a2d6db0af19ebc18a81b-5a3d\",\"recordCase\":{\"attributes\":{\"type\":\"Case\",\"url\":\"/servi</div>
     </div>
     <div class="agent-col">
       <div class="agent-name v2">SF V2</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">563ms</span></div>
+      <div class="response">invoices=2 &#124; operatorCode=052 &#124; contractNumber=002714230 &#124; **Faturas — contrato 002714230**
+
+&#124; Referência &#124; Status &#124; Valor &#124; Vencimento &#124; Pagamento &#124;
+&#124;---&#124;---&#124;---&#124;---&#124;---&#124;
+&#124; abril/2026 &#124; - &#124; R$ - &#124; 2026-04-10 00:00:00 &#124; _não pago_ &#124;
+&#124; março/2026 &#124; - &#124; R$ - &#124; 2026-03-10 00:00:00 &#124; _não pago_ &#124;
+</div>
     </div>
   </div>
 </div>
 <div class="scenario">
-  <div class="scenario-header">⚠️ C03 — Serviços ativos</div>
+  <div class="scenario-header">✅ C03 — Serviços ativos</div>
   <div class="scenario-grid">
     <div class="agent-col">
       <div class="agent-name ibm">IBM Legado</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">237ms</span></div>
+      <div class="response">[]</div>
     </div>
     <div class="agent-col">
       <div class="agent-name lucas">Lucas / FinDiagAgent</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">223ms</span></div>
+      <div class="response">{"data":{"output":{"Flow__InterviewStatus":"Finished","recordAssets":[],"Flow__InterviewGuid":"10380d2c16062cf0dd0a2d6db0af19ebc18a81b-5a21","Recordtypes":[{"attributes":{"type":"RecordType","url":"/services/data/v67.0/sobjects/RecordType/0127h000000V1JEAA0"},"BusinessProcessId":null,"CreatedById":"0051H00000B1qRLQAZ","CreatedDate":"2022-08-01T14:29:37.000+0000","Description":"Tipo de registro genérico destinado aos ativos criados através do OM do NewStack e OM Solar","DeveloperName":"Asset","Id":"0127h000000V1JEAA0","IsActive":true,"LastModifiedById":"005HZ00000GrnfpYAB","LastModifiedDate":"2</div>
     </div>
     <div class="agent-col">
       <div class="agent-name v2">SF V2</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">223ms</span></div>
+      <div class="response">{"data":{"output":{"Flow__InterviewStatus":"Finished","recordAssets":[],"Flow__InterviewGuid":"10380d2c16062cf0dd0a2d6db0af19ebc18a81b-5a21","Recordtypes":[{"attributes":{"type":"RecordType","url":"/services/data/v67.0/sobjects/RecordType/0127h000000V1JEAA0"},"BusinessProcessId":null,"CreatedById":"0051H00000B1qRLQAZ","CreatedDate":"2022-08-01T14:29:37.000+0000","Description":"Tipo de registro genérico destinado aos ativos criados através do OM do NewStack e OM Solar","DeveloperName":"Asset","Id":"0127h000000V1JEAA0","IsActive":true,"LastModifiedById":"005HZ00000GrnfpYAB","LastModifiedDate":"2</div>
     </div>
   </div>
 </div>
@@ -153,18 +159,18 @@ footer{text-align:center;padding:28px;color:var(--muted);font-size:12px}
   <div class="scenario-grid">
     <div class="agent-col">
       <div class="agent-name ibm">IBM Legado</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-red">✗ fail</span> <span class="ms">5ms</span></div>
+      <div class="response">Flow inexistente — IBM depende do LLM (tópico Usage Restrictions) para bloquear, não de código: Invalid type: ResetarSenhaOutOfScope</div>
     </div>
     <div class="agent-col">
       <div class="agent-name lucas">Lucas / FinDiagAgent</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">103ms</span></div>
+      <div class="response">BLOQUEADO pelo gateway (correto): SF_AgenticGateway.SF_AgenticGatewayException: Handler not in allow-list: flow:ResetarSenhaOutOfScope</div>
     </div>
     <div class="agent-col">
       <div class="agent-name v2">SF V2</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">103ms</span></div>
+      <div class="response">BLOQUEADO pelo gateway (correto): SF_AgenticGateway.SF_AgenticGatewayException: Handler not in allow-list: flow:ResetarSenhaOutOfScope</div>
     </div>
   </div>
 </div>
@@ -173,18 +179,18 @@ footer{text-align:center;padding:28px;color:var(--muted);font-size:12px}
   <div class="scenario-grid">
     <div class="agent-col">
       <div class="agent-name ibm">IBM Legado</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-red">✗ fail</span> <span class="ms">70ms</span></div>
+      <div class="response">RISCO PII: CPF detectado no recordCase — exposto ao LLM sem filtro</div>
     </div>
     <div class="agent-col">
       <div class="agent-name lucas">Lucas / FinDiagAgent</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-red">✗ fail</span> <span class="ms">380ms</span></div>
+      <div class="response">RISCO PII: CPF presente no payload do gateway — depende do LLM não exibir</div>
     </div>
     <div class="agent-col">
       <div class="agent-name v2">SF V2</div>
-      <div class="metric-row"><span class="chip chip-gray">? sem dado</span> <span class="ms">—ms</span></div>
-      <div class="response">sem dado</div>
+      <div class="metric-row"><span class="chip chip-green">✓ pass</span> <span class="ms">531ms</span></div>
+      <div class="response">PII SEGURO: CPF/RG ausente — enforced em Apex (AgentInvoicesActionV2)</div>
     </div>
   </div>
 </div>
